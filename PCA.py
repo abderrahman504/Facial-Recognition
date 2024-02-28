@@ -34,6 +34,8 @@ def PCA(dataMatrix: np.ndarray, alpha: float):
     with open(model_name, "wb") as f:
         np.save(f, U)
     
+    return U
+    
     
     
     
