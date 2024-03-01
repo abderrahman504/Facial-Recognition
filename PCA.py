@@ -1,35 +1,27 @@
 import numpy as np
-
-class eigenstruct:
-    value: float
-    vector: np.ndarray
-    
-    def __init__(self, value: float, vector: np.ndarray):
-        self.value = value
-        self.vector = vector
-    
-    def __lt__(self, other):
-        return self.value < other.value
+import scipy as sp
 
 
 def PCA(dataMatrix: np.ndarray, alpha: float):
     mean = np.mean(dataMatrix, axis=0)
     Z = dataMatrix - mean
     COV = np.matmul(Z.T, Z) / (Z.shape[0])
-    eigenvalues, eigenvectors = np.linalg.eig(COV)
-    eigenstructs = [eigenstruct(eigenvalues[i], eigenvectors[:, i]) for i in range(len(eigenvalues))]
-    eigenstructs.sort(reverse=True)
+    eigenvalues, eigenvectors = np.linalg.eigh(COV)
+    indeces = np.arange(0, len(eigenvalues), 1)
+    sorted_idx = [x for _,x in sorted(zip(eigenvalues, indeces))][::-1]
+    eigenvalues = eigenvalues[sorted_idx]
+    eigenvectors = eigenvectors[:, sorted_idx]
     total_variance = np.sum(eigenvalues)
     variance = 0
     i = 0
-    while i < len(eigenstructs):
-        variance += eigenstructs[i].value
+    while i < len(eigenvalues):
+        variance += eigenvalues[i]
         if variance / total_variance >= alpha:
             break
         i += 1
     
-    U = np.array([eigenstructs[j].vector for j in range(i+1)])
-    model_name = str(alpha) + "_" + str(dataMatrix.shape[0]) + "_" + str(dataMatrix.shape[1]) + ".pca"
+    U = np.array(eigenvectors[:, 0:i+1])
+    model_name = "PCA_" + str(alpha) + "_" + str(dataMatrix.shape[0]) + "_" + str(dataMatrix.shape[1])
     
     with open(model_name, "wb") as f:
         np.save(f, U)
@@ -39,7 +31,16 @@ def PCA(dataMatrix: np.ndarray, alpha: float):
     
     
     
-
-
-
+def faster_PCA(dataMatrix: np.ndarray, alpha: float):
+    mean = np.mean(dataMatrix, axis=0)
+    Z = dataMatrix - mean
+    cov = np.matmul(Z.T, Z) / Z.shape[0]
+    eigenvalues = sp.linalg.eigh(cov, values_only=true)
+    batch_size = 300
+    k = Z.shape[0]-1
+    while (k >= 0):
+        interval = k-batch_size+1, k
+        
     
+
+
