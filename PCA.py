@@ -30,17 +30,5 @@ def PCA(dataMatrix: np.ndarray, alpha: float):
     
     
     
-    
-def faster_PCA(dataMatrix: np.ndarray, alpha: float):
-    mean = np.mean(dataMatrix, axis=0)
-    Z = dataMatrix - mean
-    cov = np.matmul(Z.T, Z) / Z.shape[0]
-    eigenvalues = sp.linalg.eigh(cov, values_only=true)
-    batch_size = 300
-    k = Z.shape[0]-1
-    while (k >= 0):
-        interval = k-batch_size+1, k
-        
-    
 
 
