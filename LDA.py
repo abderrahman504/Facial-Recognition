@@ -30,7 +30,7 @@ def LDA(D, labels):
     eigenvalues = eigenvalues[idx]
     eigenvectors = eigenvectors[:, idx]
 
-    U = eigenvectors[:, :39]
+    U = eigenvectors[:, :n_classes-2]
     
     with open(f"LDA_{D.shape[0]}_{n_classes}", "wb") as f:
         np.save(f, U)
